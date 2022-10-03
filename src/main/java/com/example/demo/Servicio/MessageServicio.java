@@ -13,13 +13,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MessageServicio {
+
     @Autowired
     private MessageRepositorio messageRepository;
-    
+
     public List<Message> getAll() {
         return messageRepository.getAll();
     }
-        
+
     public Optional<Message> getMessage(int messageId) {
         return messageRepository.getMessage(messageId);
     }
@@ -28,12 +29,37 @@ public class MessageServicio {
         if (message.getIdMessage() == null) {
             return messageRepository.save(message);
         } else {
-            Optional<Message> e = messageRepository.getMessage (message.getIdMessage());
+            Optional<Message> e = messageRepository.getMessage(message.getIdMessage());
             if (e.isEmpty()) {
                 return messageRepository.save(message);
             } else {
                 return message;
             }
         }
-    }  
+    }
+
+    public Message update(Message message) {
+        if (message.getIdMessage() != null) {
+            Optional<Message> e = messageRepository.getMessage(message.getIdMessage());
+            if (!e.isEmpty()) {
+                if (message.getMessageText() != null) {
+                    e.get().setMessageText(message.getMessageText());
+                }
+                messageRepository.save(e.get());
+                return e.get();
+            } else {
+                return message;
+            }
+        } else {
+            return message;
+        }
+    }
+
+    public boolean deleteMessage(int messageId) {
+        Boolean d = getMessage(messageId).map(message -> {
+            messageRepository.delete(message);
+            return true;
+        }).orElse(false);
+        return d;
+    }
 }
