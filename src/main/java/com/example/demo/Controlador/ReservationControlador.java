@@ -5,7 +5,9 @@
 package com.example.demo.Controlador;
 
 import com.example.demo.Modelo.Reservation;
+import com.example.demo.Repositorio.CountClient;
 import com.example.demo.Servicio.ReservationServicio;
+import com.example.demo.Servicio.Status;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +56,21 @@ public class ReservationControlador {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public boolean delete(@PathVariable("id") int reservationId) {
         return reservationService.deleteReservation(reservationId);
+    }
+    //////////////////////Reto 5///////////////////////////////////
+
+    @GetMapping("/report-clients")
+    public List<CountClient> getReservationsReportClient() {
+        return reservationService.getTopClients();
+    }
+
+    @GetMapping("/report-dates/{dateOne}/{dateTwo}")
+    public List<Reservation> getReservationsReportDates(@PathVariable("dateOne") String dateOne, @PathVariable("dateTwo") String dateTwo) {
+        return reservationService.informePeriodoTiempoReservas(dateOne, dateTwo);
+    }
+
+    @GetMapping("/report-status")
+    public Status getReservationsStatusReport() {
+        return reservationService.getReservationStatusReport();
     }
 }
